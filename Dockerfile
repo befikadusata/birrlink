@@ -21,6 +21,10 @@ EXPOSE 8000
 
 # Install system dependencies and set up the Python environment
 #RUN apk add --no-cache gcc musl-dev libffi-dev python3-dev && \
+
+# Install required packages
+RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev python3-dev postgresql-dev
+
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     /py/bin/pip install -r /tmp/requirements.txt && \
@@ -37,4 +41,4 @@ ENV PATH="/py/bin:$PATH"
 USER django-user
 
 # Default command (optional, if your app requires one)
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
