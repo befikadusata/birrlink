@@ -2,6 +2,9 @@
 Serializers for user-related functionality.
 """
 
+from django.db import transaction
+from dj_rest_auth.registration.serializers import RegisterSerializer
+
 from django.contrib.auth import (
     get_user_model, 
 )
@@ -30,4 +33,16 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
-    
+
+class CustomRegisterSerializer(RegisterSerializer):
+    """Custom serializer for user registration"""
+
+    name = serializers.CharField(max_length=255)
+
+    # Define transaction.atomic to rollback the save operation in case of error
+    @transaction.atomic
+    def save(self,request):
+        user = super().save(request)
+        user.name = self.data.get("name")
+        user.save()
+        return user

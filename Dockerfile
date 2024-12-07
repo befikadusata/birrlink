@@ -8,7 +8,7 @@ LABEL maintainer="CodeUmwelt"
 ENV PYTHONUNBUFFERED=1
 
 # Copy requirements file to a temporary location
-COPY ./requirements.txt /tmp/requirements.txt
+COPY requirements.txt /tmp/requirements.txt
 
 # Copy the application code
 COPY ./birrlink /birrlink

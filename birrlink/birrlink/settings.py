@@ -42,6 +42,20 @@ INSTALLED_APPS = [
     'user',
     'api',
     'api_v1',
+
+    # Authentications
+    'django.contrib.sites',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    #Documentation
+    'drf_spectacular',
+
 ]
 
 MIDDLEWARE = [
@@ -52,6 +66,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #Authentication
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'birrlink.urls'
@@ -88,7 +105,34 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
+    ],
+}
+
+REST_AUTH = {
+    "USER_DETAILS_SERIALIZER": "user.serializers.UserSerializer",
+    "REGISTER_SERIALIZER": "user.serializers.CustomRegisterSerializer",
+
+    #JWT
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "jwt-access-token",
+    "JWT_AUTH_REFRESH_COOKIE": "jwt-refresh-token",
+    "JWT_AUTH_SECURE": True,
+    "JWT_AUTH_HTTPONLY": True,  # True is the default value
+}
+
 AUTH_USER_MODEL = "core.User"
+
+# django-allauth configurations so that dj-rest-auth uses email for
+# login/registration and does not require a username field
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -108,6 +152,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Email 
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -130,3 +177,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+SITE_ID = 1
